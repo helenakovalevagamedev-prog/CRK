@@ -53,7 +53,7 @@ public sealed class ClickerPresenter : IInitializable, IDisposable
         }
 
         model.AddCurrency(config.RewardPerClick);
-        view.PlayCollectEffect();
+        view.PlayCollectEffect(config.RewardPerClick);
     }
 
     private void OnCurrencyChanged(int value)

@@ -3,6 +3,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public sealed class ClickerView : MonoBehaviour
 {
@@ -20,11 +21,23 @@ public sealed class ClickerView : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip collectClip;
     [SerializeField, Range(0f, 0.3f)] private float pitchVariation = 0.08f;
+    
+    [Header("Particle")]
+    [SerializeField] private ParticleSystem collectParticles;
+    [SerializeField, Min(1)] private int particleCount = 15;
 
     private Transform buttonTransform;
     private Vector3 buttonBaseScale;
 
     public event Action onCollectClicked;
+    
+    private FlyingTextPool flyingTextPool;
+
+    [Inject]
+    public void Construct(FlyingTextPool flyingTextPool)
+    {
+        this.flyingTextPool = flyingTextPool;
+    }
 
     private void Awake()
     {
@@ -50,7 +63,7 @@ public sealed class ClickerView : MonoBehaviour
         energyText.text = $"Energy: {value} / {max}";
     }
 
-    public void PlayCollectEffect()
+    public void PlayCollectEffect(int reward)
     {
         if (!isActiveAndEnabled)
         {
@@ -59,6 +72,20 @@ public sealed class ClickerView : MonoBehaviour
 
         PlayButtonPunch();
         PlaySound();
+        PlayParticles();
+        PlayFlyingText(reward);
+    }
+
+    private void PlayFlyingText(int reward)
+    {
+        FlyingText item = flyingTextPool.Spawn();
+        item.Play($"+{reward}", buttonTransform.position, () => flyingTextPool.Despawn(item));
+    }
+
+    private void PlayParticles()
+    {
+        collectParticles.transform.position = buttonTransform.position;
+        collectParticles.Emit(particleCount);
     }
 
     private void PlayButtonPunch()
