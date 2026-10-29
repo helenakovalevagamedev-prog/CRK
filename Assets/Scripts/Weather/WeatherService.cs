@@ -22,7 +22,6 @@ public sealed class WeatherService : IWeatherService
 
     public async UniTask<WeatherForecast> GetForecastAsync(CancellationToken token)
     {
-        Debug.Log($"[{Time.time:F1}] Погода: запрос в очередь");
         string json = await queue.Enqueue(RequestTag, ct => http.GetTextAsync(config.ForecastUrl, ct), token);
 
         var response = JsonUtility.FromJson<WeatherResponse>(json);

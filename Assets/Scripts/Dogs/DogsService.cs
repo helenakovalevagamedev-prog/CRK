@@ -21,7 +21,6 @@ public sealed class DogsService : IDogsService
 
     public async UniTask<IReadOnlyList<Breed>> GetBreedsAsync(CancellationToken token)
     {
-        Debug.Log("Породы: запрос в очередь");
         string json = await queue.Enqueue(RequestTag, ct => http.GetTextAsync(config.BreedsUrl, ct), token);
 
         var response = JsonUtility.FromJson<BreedListResponse>(json);
