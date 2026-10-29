@@ -20,6 +20,7 @@ public sealed class GameInstaller : MonoInstaller
     [SerializeField] private DogsView dogsView;
     [SerializeField] private BreedItemView breedItemPrefab;
     [SerializeField] private Transform breedListRoot;
+    [SerializeField] private BreedPopupView breedPopupView;
 
     public override void InstallBindings()
     {
@@ -54,5 +55,6 @@ public sealed class GameInstaller : MonoInstaller
             .FromComponentInNewPrefab(breedItemPrefab)
             .UnderTransform(breedListRoot);
         Container.BindInterfacesTo<DogsPresenter>().AsSingle();
+        Container.Bind<BreedPopupView>().FromInstance(breedPopupView).AsSingle();
     }
 }

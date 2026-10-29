@@ -41,6 +41,21 @@ public sealed class DogsService : IDogsService
 
         return breeds;
     }
+    
+    public async UniTask<Breed> GetBreedAsync(string id, CancellationToken token)
+    {
+        string url = $"{config.BreedsUrl}/{id}";
+        string json = await queue.Enqueue(RequestTag, ct => http.GetTextAsync(url, ct), token);
+
+        var response = JsonUtility.FromJson<BreedDetailsResponse>(json);
+
+        if (response?.data == null)
+        {
+            throw new Exception($"There is no breed data in the response {id}");
+        }
+
+        return ToBreed(response.data);
+    }
 
     private static Breed ToBreed(BreedData data)
     {
