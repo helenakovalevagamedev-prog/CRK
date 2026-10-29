@@ -14,6 +14,12 @@ public sealed class GameInstaller : MonoInstaller
     [Header("Weather")]
     [SerializeField] private WeatherConfig weatherConfig;
     [SerializeField] private WeatherView weatherView;
+    
+    [Header("Dogs")]
+    [SerializeField] private DogsConfig dogsConfig;
+    [SerializeField] private DogsView dogsView;
+    [SerializeField] private BreedItemView breedItemPrefab;
+    [SerializeField] private Transform breedListRoot;
 
     public override void InstallBindings()
     {
@@ -39,5 +45,14 @@ public sealed class GameInstaller : MonoInstaller
         Container.Bind<WeatherView>().FromInstance(weatherView).AsSingle();
         Container.Bind<IWeatherService>().To<WeatherService>().AsSingle();
         Container.BindInterfacesTo<WeatherPresenter>().AsSingle();
+        
+        Container.BindInstance(dogsConfig);
+        Container.Bind<IDogsService>().To<DogsService>().AsSingle();
+        Container.Bind<DogsView>().FromInstance(dogsView).AsSingle();
+        Container.BindMemoryPool<BreedItemView, BreedItemPool>()
+            .WithInitialSize(10)
+            .FromComponentInNewPrefab(breedItemPrefab)
+            .UnderTransform(breedListRoot);
+        Container.BindInterfacesTo<DogsPresenter>().AsSingle();
     }
 }
