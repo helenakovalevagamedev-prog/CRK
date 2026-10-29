@@ -7,6 +7,7 @@ public sealed class GameInstaller : MonoInstaller
     
     [Header("Clicker")]
     [SerializeField] private ClickerConfig clickerConfig;
+    [SerializeField] private ClickerAnimationConfig clickerAnimationConfig;
     [SerializeField] private ClickerView clickerView;
     [SerializeField] private FlyingText flyingTextPrefab;
     [SerializeField] private Transform flyingTextRoot;
@@ -32,6 +33,7 @@ public sealed class GameInstaller : MonoInstaller
         Container.BindInterfacesTo<TabsPresenter>().AsSingle();
         
         Container.BindInstance(clickerConfig);
+        Container.BindInstance(clickerAnimationConfig);
         Container.Bind<ClickerModel>().AsSingle();
         Container.Bind<ClickerView>().FromInstance(clickerView).AsSingle();
         Container.BindInterfacesTo<ClickerPresenter>().AsSingle();

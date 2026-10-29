@@ -12,11 +12,6 @@ public sealed class ClickerView : MonoBehaviour
     [SerializeField] private TMP_Text currencyText;
     [SerializeField] private TMP_Text energyText;
 
-    [Header("Animation")]
-    [SerializeField] private float punchStrength = 0.15f;
-    [SerializeField] private float punchDuration = 0.25f;
-    [SerializeField] private int punchVibrato = 8;
-
     [Header("Sound")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip collectClip;
@@ -32,11 +27,13 @@ public sealed class ClickerView : MonoBehaviour
     public event Action onCollectClicked;
     
     private FlyingTextPool flyingTextPool;
+    private ClickerAnimationConfig animationConfig;
 
     [Inject]
-    public void Construct(FlyingTextPool flyingTextPool)
+    public void Construct(FlyingTextPool flyingTextPool,ClickerAnimationConfig animationConfig)
     {
         this.flyingTextPool = flyingTextPool;
+        this.animationConfig = animationConfig;
     }
 
     private void Awake()
@@ -94,7 +91,11 @@ public sealed class ClickerView : MonoBehaviour
         buttonTransform.localScale = buttonBaseScale;
 
         buttonTransform
-            .DOPunchScale(Vector3.one * punchStrength, punchDuration, punchVibrato, 0.5f)
+            .DOPunchScale(
+                Vector3.one * animationConfig.PunchStrength,
+                animationConfig.PunchDuration,
+                animationConfig.PunchVibrato,
+                animationConfig.PunchElasticity)
             .SetLink(gameObject);
     }
 
